@@ -1,0 +1,66 @@
+---
+title: "R Notebook"
+output: github_document
+---
+
+#####install and load reticulate 
+```{r}
+# pkgTest is a helper function to load packages and install packages only when they are not installed yet.
+pkgTest <- function(x)
+{
+  if (x %in% rownames(installed.packages()) == FALSE) {
+    install.packages(x, dependencies= TRUE)    
+  }
+  library(x, character.only = TRUE)
+}
+#reticulate is needed to use python in R 
+neededPackages <- c("reticulate" )#this is just a placeholder, installing dev version of reticulate
+for (package in neededPackages){pkgTest(package)}
+
+```
+
+
+####Conda installation
+#####create environment for python and install python packages into it using conda 
+```{r}
+#conda_create("r-reticulate")#note this line needs to be commented out once r-reticulate has been created, otherwise there will be an error. 
+
+# indicate that we want to use a specific condaenv
+use_condaenv("r-reticulate")
+
+conda_install("r-reticulate","pandas")
+conda_install("r-reticulate", "scipy")
+conda_install("r-reticulate", "numpy")
+
+# import SciPy (it will be automatically discovered in "r-reticulate")
+scipy <- import("scipy")
+
+# import SciPy (will use "r-reticulate" as per call to use_condaenv)
+pandas <- import("pandas")
+
+numpy <- import("numpy")
+```
+
+
+#####use pandas in python to read in a file (test that python and pandas work)
+```{python}
+import pandas
+#import numpy
+#import a file with all US states
+states = pandas.read_csv("https://github.com/fischhoff/tick_searches/blob/master/50_us_states_all_data.csv")
+#look at first few rows
+states.head()
+```
+
+#####use reticulate to install python packages to default environment "r-reticulate".commenting this out because pandas didn't work this way 
+```{r}
+#py_install("pandas")
+#py_install("numpy")
+#py_install("scipy")
+#scipy <- import("scipy")
+
+#pandas <- import("pandas")
+ #numpy <- import("numpy")
+
+```
+
